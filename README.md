@@ -42,6 +42,9 @@ not using them or your next AWS bill will be a nasty surprise.
 
 * Only supports one stream out of the box. You can configure it yourself to do more than one.
 
+* Region and AZ not parameterized. It uses us-east-1a. This would be really easy to do but I haven't
+had time yet to test it. Coming soon.
+
 The Perfect Use Case For Out Of The Box Configuration
 -----------------------------------------------------
 
@@ -59,13 +62,16 @@ consumers (you'll need to do your own load testing if you need it).
 Instructions
 ------------
 
-1. Get an AWS account.
+1. Get an AWS account. You probably want to ask for an increase in Elastic IP addresses to at least
+6 (the default is 5 and this stack needs 6). Make sure there's a default subnet in US East 1a.
 
 2. Create an AWS keypair and API key.
 
-3. Upload the included cloudformation.template file to Cloudformation.
+3. Upload the included cloudformation.template file to Cloudformation. Enter the AMI id you want to use.
+It should be Debian / Wheezy, AMD64, and Paravirtual. ami-baeda9d2 at the time of this writing is
+a good choice. Debian / Jessie might work also but is not tested.
 
-4. OPTIONALLY, input your key name, your API key, and the contents of your private key as parameters.
+4. OPTIONALLY, input your key name, your API id and key, and the contents of your private key as parameters.
 For better security but no plug and play, leave all the parameters blank. You will have to upload
 the information yourself (see next step).
 
@@ -81,7 +87,7 @@ and place your key file in the location `/etc/salt/KEYPAIR.pem`. Then make it re
   Finally, run this command to finish deployment:
 
 ```
-    sudo bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "MyKeypairName" "MyAPIKey"
+    sudo bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "MyKeypairName" "MyApiId" "MyApiKey"
 ```
 
   There are other ways to get the private key to the cloud. In my personal environment I have the

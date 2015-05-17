@@ -56,7 +56,10 @@ cp -f /opt/stack/templates/salt/master /etc/salt/master
 service salt-master restart
 
 if [ x"$1" != "x" ]; then
-	echo "$1" > /etc/salt/KEYPAIR.pem
+	echo "-----BEGIN RSA PRIVATE KEY-----" > /etc/salt/KEYPAIR.pem
+	echo "$1" | sed -r 's/-*BEGIN RSA PRIVATE KEY-* *//' | sed -r 's/-*END RSA PRIVATE KEY-* *//' | sed -r 's/([^-]) ([^-])/\1\n\2/g' >> /etc/salt/KEYPAIR.pem
+	echo "-----END RSA PRIVATE KEY-----" >> /etc/salt/KEYPAIR.pem
+
 	chmod 400 /etc/salt/KEYPAIR.pem
 	bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "$2" "$3" "$4"
 fi

@@ -6,6 +6,7 @@ ubuntu_ec2_public_media_server:
   ssh_username: ubuntu
   network_interfaces:
     - DeviceIndex: 0
+      SubnetId: {{ default_subnet }}
       PrivateIpAddresses:
         - Primary: True
       allocate_new_eip: True
@@ -23,6 +24,7 @@ ubuntu_ec2_public_media_edge:
   ssh_username: ubuntu
   network_interfaces:
     - DeviceIndex: 0
+      SubnetId: {{ default_subnet }}
       PrivateIpAddresses:
         - Primary: True
       allocate_new_eip: True

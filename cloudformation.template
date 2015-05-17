@@ -116,7 +116,7 @@
                         "Value" : "Salt Master"
                     }
                 ],
-                "SecurityGroups" : [ { "Ref" : "sgAllowSSH" } ],
+                "SecurityGroups" : [ { "Ref" : "sgAllowSSH" }, { "Ref": "sgAllowSalt" } ],
                 "UserData"              : {
                     "Fn::Base64" : {
                         "Fn::Join" : [
@@ -169,6 +169,26 @@
                     {
                         "Key" : "Name",
                         "Value" : "sgAllowSSH"
+                    }
+                ]
+            }
+        },
+        "sgAllowSalt"         : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Allow Salt Only",
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "4505",
+                        "ToPort"     : "4506",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "Tags"                 : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "sgAllowSalt"
                     }
                 ]
             }
