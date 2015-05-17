@@ -1,0 +1,246 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Parameters"               : {
+        "KeyPairName" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "The name of your EC2 key pair to use."
+        },
+        "KeyContent" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "The full content of your EC2 private key. This is not very secure so make sure to use a key that is specific to this stack."
+        },
+        "ApiId" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "The ID of your api key. Again, should not be used for any other purpose than this stack."
+        }
+    },
+    "Resources"                : {
+        "role-SaltAdminRole"  : {
+            "Type" : "AWS::IAM::Role",
+            "Properties" : {
+                "AssumeRolePolicyDocument" : {
+                    "Version" : "2012-10-17",
+                    "Statement" : [
+                        {
+                            "Sid" : "",
+                            "Effect" : "Allow",
+                            "Principal" : {
+                                "Service" : "ec2.amazonaws.com"
+                            },
+                            "Action"    : "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Path"                     : "/",
+                "Policies"                 : [
+                    {
+                        "PolicyName" : "policy-SaltAdminPolicy",
+                        "PolicyDocument" : {
+                            "Statement" : [
+                                {
+                                    "Effect" : "Allow",
+                                    "Action" : [
+                                        "route53:*"
+                                    ],
+                                    "Resource" : [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Action" : "ec2:*",
+                                    "Effect" : "Allow",
+                                    "Resource" : "*"
+                                },
+                                {
+                                    "Effect" : "Allow",
+                                    "Action" : "elasticloadbalancing:*",
+                                    "Resource" : "*"
+                                },
+                                {
+                                    "Effect" : "Allow",
+                                    "Action" : "cloudwatch:*",
+                                    "Resource" : "*"
+                                },
+                                {
+                                    "Effect" : "Allow",
+                                    "Action" : "autoscaling:*",
+                                    "Resource" : "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "profile-SaltAdminProfile"  : {
+            "Type" : "AWS::IAM::InstanceProfile",
+            "Properties" : {
+                "Path" : "/",
+                "Roles" : [
+                    {
+                        "Ref" : "role-SaltAdminRole"
+                    }
+                ]
+            }
+        },
+        "vm-SaltMaster" : {
+            "Type" : "AWS::EC2::Instance",
+            "Properties" : {
+                "DisableApiTermination" : "FALSE",
+                "IamInstanceProfile"    : {
+                    "Ref" : "profile-SaltAdminProfile"
+                },
+                "ImageId"               : "ami-2c886c44",
+                "InstanceType"          : "t1.micro",
+                "KeyName"               : {
+                                             "Ref" : "KeyPairName"
+                                          },
+                "Monitoring"            : "false",
+                "Tags"                  : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "Salt Master"
+                    }
+                ],
+                "UserData"              : {
+                    "Fn::Base64" : {
+                        "Fn::Join" : [
+                            "\n",
+                            [
+                                "#!/bin/bash",
+                                "apt-get update",
+                                "apt-get install -y git",
+                                "git clone https://www.github.com/eisaacson/streamer.git /opt/stack",
+                                { "Fn::Join" : [ 
+                                    " ", 
+                                    [ "bash /opt/stack/scripts/bootstrap/bootstrap_salt_master.sh",
+                                        {
+                                            "Ref" : "KeyContent"
+                                        },
+                                        {
+                                            "Ref" : "KeyPairName"
+                                        },
+                                        {
+                                            "Ref" : "ApiId"
+                                        }
+                                    ]
+                                ]
+                            ]
+                        ]
+                    }
+                },
+                "NetworkInterfaces"     : [
+                    {
+                        "DeleteOnTermination" : "true",
+                        "Description"         : "Primary network interface",
+                        "DeviceIndex"         : 0,
+                        "GroupSet"            : [
+                            {
+                                "Ref" : "sg-SSHOnly"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "sg-SSHOnly"         : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Allow SSH Only",
+                "VpcId"            : {
+                    "Ref" : "vpc9136eef4"
+                },
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "22",
+                        "ToPort"     : "22",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "SecurityGroupEgress"  : [
+                    {
+                        "IpProtocol" : "-1",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "Tags"                 : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "sgsAllowSSH"
+                    }
+                ]
+            }
+        },
+        "sg-AllowHTTPAnywhere"     : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Allow HTTP Anywhere",
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "80",
+                        "ToPort"     : "80",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "Tags"                 : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "sgAllowHTTPAnywhere"
+                    }
+                ]
+            }
+        },
+        "sg-AllowRMTPAnywhere"     : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Allow RTMP Anywhere",
+                "VpcId"            : {
+                    "Ref" : "vpc9136eef4"
+                },
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "1935",
+                        "ToPort"     : "1935",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "Tags"                 : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "sgAllowRTMPAnywhere"
+                    }
+                ]
+            }
+        },
+		"sg-AllowHTTPAltAnywhere"     : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Allow HttpAlt Anywhere",
+                "VpcId"            : {
+                    "Ref" : "vpc9136eef4"
+                },
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "8080",
+                        "ToPort"     : "8080",
+                        "CidrIp"     : "0.0.0.0/0"
+                    }
+                ],
+                "Tags"                 : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "sgAllowHTTPAltAnywhere"
+                    }
+                ]
+            }
+        }
+    },
+    "Description"              : "Live Stream Template"
+}

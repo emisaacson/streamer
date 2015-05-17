@@ -1,0 +1,32 @@
+
+ubuntu_ec2_public_media_server:
+  - media01:
+      grains:
+        media: True
+        media-type: server
+
+ubuntu_ec2_public_media_edge:
+  - stream-m01:
+      grains:
+        media: True
+        media-type: edge
+  - stream-m02:
+      grains:
+        media: True
+        media-type: edge
+  - hls-dash01:
+      grains:
+        media: True
+        media-type: edge
+  - hls-dash02:
+      grains:
+        media: True
+        media-type: edge
+  - rtmp01:
+      grains:
+        media: True
+        media-type: edge
+  - rtmp02:
+      grains:
+        media: True
+        media-type: edge

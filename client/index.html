@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Live Video</title>
+
+    <script src="fp/jquery-1.11.0.min.js"></script>
+
+    <!-- UNCOMMECT FOR GOOGLE ANALYTICS AND INSERT YOUR ACCOUNT ID -->
+    <!--
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', '<INSERT GA ID HERE>', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    -->
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="content">
+
+        <!-- player skin -->
+        <link rel="stylesheet" href="fp/skin/minimalist.css">
+
+        <!-- site specific styling -->
+        <style>
+        .flowplayer { width: 800px; background-color: black; max-width: 100%; }
+        </style>
+
+        <!-- flowplayer depends on jQuery 1.7.1+ (for now) -->
+
+        <!-- include flowplayer -->
+        <script src="fp/flowplayer.min.js"></script>
+        <script src="fp/jwplayer/jwplayer.js"></script>
+        <script>
+
+        /////////// CUSTOMIZE THESE VALUES BEFORE DEPLOYING /////////////
+        var MyRTMPDomain = "rtmp.example.com";                         //
+        var MyWebMDomain = "webm.example.com";                         //
+        var MyHLSDomain  = "hls.example.com";                          //
+                                                                       //
+        jwplayer.key     = "<INSERT JWPLAYER KEY HERE>";               //
+        /////////////////////////////////////////////////////////////////
+
+        var hasFlash = false;
+        try {
+          var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+          if (fo) {
+            hasFlash = true;
+          }
+        } catch (e) {
+          if (navigator.mimeTypes
+                && navigator.mimeTypes['application/x-shockwave-flash'] != undefined
+                && navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin) {
+            hasFlash = true;
+          }
+        }
+
+        if (hasFlash) {
+          $(function () {
+            jwplayer("jwp").setup({
+              file: "rtmp://"+MyRTMPDomain+"/live/feed",
+              height: 360,
+              width: 640
+            });
+
+            // **** Uncomment the below to integrate JW player with google analytics.
+            //
+            // jwplayer("jwp").onPlay(function (evt) {
+            //     ga('send', 'event', 'Videos', 'JWPlay');
+            // });
+            // jwplayer("jwp").onPause(function (evt) {
+            //     ga('send', 'event', 'Videos', 'JWPause');
+            // });
+            // jwplayer("jwp").onComplete(function (evt) {
+            //     ga('send', 'event', 'Videos', 'JWComplete');
+            // });
+          });
+        }
+        else {
+          $(function () {
+              // embed api cannot handle this setup yet
+              flowplayer.conf.embed = false;
+              flowplayer.conf.live = true;
+
+              // *********** Uncomment the below to integrate flowplayer with google analytics
+              //
+              // flowplayer.conf.analytics = "<YOUR GA ID HERE>";
+
+              flowplayer(function (api) {
+
+                  // ******** Uncomment the below to integrate flowplayer with google analytics
+                  //
+                  // api.bind("finish", function (e, api, video) {
+                  //     ga('send', 'event', 'Videos', 'FPFinish', video.type);
+                  // });
+                  // api.bind("pause", function (e, api, video) {
+                  //     ga('send', 'event', 'Videos', 'FPPause', video.type);
+                  // });
+                  // api.bind("resume", function (e, api, video) {
+                  //     ga('send', 'event', 'Videos', 'FPResume', video.type);
+                  // });
+                  // api.bind("stop", function (e, api, video) {
+                  //     ga('send', 'event', 'Videos', 'FPStop', video.type);
+                  // });
+                  // api.bind("ready", function (e, api, video) {
+                  //     ga('send', 'event', 'Videos', 'FPReady', video.type);
+                  // });
+              });
+
+
+              $("#player").flowplayer({
+                playlist: [[
+                  { flash:   "feed" },
+                  { mpegurl: "http://"+MyHLSDomain+"/hls/feed.m3u8" },
+                  { webm: "http://"+MyWebMDomain+"/stream.webm" }
+                ]],
+                rtmp: "rtmp://"+MyRTMPDomain+":80/live/",
+                fullscreen: true
+              });
+          });
+
+        }
+
+        </script>
+
+
+
+        <!-- the player -->
+        <div id="player" class="is-splash" data-engine="flash">
+           <div class="fp-ratio"></div>
+        </div>
+        <div id="jwp"></div>
+
+
+      </div>
+    </div>
+  </body>
+</html>
