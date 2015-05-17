@@ -150,9 +150,6 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow SSH Only",
-                "VpcId"            : {
-                    "Ref" : "vpc9136eef4"
-                },
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
@@ -170,7 +167,7 @@
                 "Tags"                 : [
                     {
                         "Key" : "Name",
-                        "Value" : "sgsAllowSSH"
+                        "Value" : "sgAllowSSH"
                     }
                 ]
             }
@@ -199,9 +196,6 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow RTMP Anywhere",
-                "VpcId"            : {
-                    "Ref" : "vpc9136eef4"
-                },
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
@@ -222,9 +216,6 @@
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow HttpAlt Anywhere",
-                "VpcId"            : {
-                    "Ref" : "vpc9136eef4"
-                },
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
