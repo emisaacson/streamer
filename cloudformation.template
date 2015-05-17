@@ -15,10 +15,15 @@
             "Type" : "String",
             "Default" : "",
             "Description" : "The ID of your api key. Again, should not be used for any other purpose than this stack."
+        },
+        "AmiId" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "Select a Debian, amd64, paravirtual, EBS backed instance."
         }
     },
     "Resources"                : {
-        "role-SaltAdminRole"  : {
+        "roleSaltAdminRole"  : {
             "Type" : "AWS::IAM::Role",
             "Properties" : {
                 "AssumeRolePolicyDocument" : {
@@ -75,25 +80,26 @@
                 ]
             }
         },
-        "profile-SaltAdminProfile"  : {
+        "profileSaltAdminProfile"  : {
             "Type" : "AWS::IAM::InstanceProfile",
             "Properties" : {
                 "Path" : "/",
                 "Roles" : [
                     {
-                        "Ref" : "role-SaltAdminRole"
+                        "Ref" : "roleSaltAdminRole"
                     }
                 ]
             }
         },
-        "vm-SaltMaster" : {
+        "vmSaltMaster" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
                 "DisableApiTermination" : "FALSE",
                 "IamInstanceProfile"    : {
-                    "Ref" : "profile-SaltAdminProfile"
+                    "Ref" : "profileSaltAdminProfile"
                 },
-                "ImageId"               : "ami-2c886c44",
+                "ImageId"               : { "Ref" : "AmiId" },
+                "AvailabilityZone"      : "us-east-1a",
                 "InstanceType"          : "t1.micro",
                 "KeyName"               : {
                                              "Ref" : "KeyPairName"
@@ -105,6 +111,7 @@
                         "Value" : "Salt Master"
                     }
                 ],
+                "SecurityGroups" : [ { "Ref" : "sgAllowSSH" } ],
                 "UserData"              : {
                     "Fn::Base64" : {
                         "Fn::Join" : [
@@ -130,26 +137,14 @@
                                         },
                                         "\""
                                     ]
-                                ]
+                                ] }
                             ]
                         ]
                     }
-                },
-                "NetworkInterfaces"     : [
-                    {
-                        "DeleteOnTermination" : "true",
-                        "Description"         : "Primary network interface",
-                        "DeviceIndex"         : 0,
-                        "GroupSet"            : [
-                            {
-                                "Ref" : "sg-SSHOnly"
-                            }
-                        ]
-                    }
-                ]
+                }
             }
         },
-        "sg-SSHOnly"         : {
+        "sgAllowSSH"         : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow SSH Only",
@@ -161,12 +156,6 @@
                         "CidrIp"     : "0.0.0.0/0"
                     }
                 ],
-                "SecurityGroupEgress"  : [
-                    {
-                        "IpProtocol" : "-1",
-                        "CidrIp"     : "0.0.0.0/0"
-                    }
-                ],
                 "Tags"                 : [
                     {
                         "Key" : "Name",
@@ -175,7 +164,7 @@
                 ]
             }
         },
-        "sg-AllowHTTPAnywhere"     : {
+        "sgAllowHTTPAnywhere"     : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow HTTP Anywhere",
@@ -195,7 +184,7 @@
                 ]
             }
         },
-        "sg-AllowRMTPAnywhere"     : {
+        "sgAllowRMTPAnywhere"     : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow RTMP Anywhere",
@@ -215,7 +204,7 @@
                 ]
             }
         },
-		"sg-AllowHTTPAltAnywhere"     : {
+		"sgAllowHTTPAltAnywhere"     : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "GroupDescription" : "Allow HttpAlt Anywhere",

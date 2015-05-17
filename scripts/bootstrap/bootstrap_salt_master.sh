@@ -13,8 +13,11 @@ apt-get update
 apt-get -y upgrade
 
 apt-get -y install curl
+mkdir /opt/salt
+pushd /opt/salt
 curl -o install_salt.sh -L https://bootstrap.saltstack.com
-bash install_salt.sh -M -N git v2015.2
+bash install_salt.sh -M -N git v2015.5
+popd
 
 apt-get -y install python-pip
 apt-get -y install python-dev
