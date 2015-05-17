@@ -70,13 +70,17 @@ the information yourself (see next step).
 will stop after the Salt Master machine is created. SSH into the Salt Master
 and place your key file in the location `/etc/salt/KEYPAIR.pem`. Then make it read-only via
 
-    sudo chown root:rot /etc/salt/KEYPAIR.pem
+```
+    sudo chown root:root /etc/salt/KEYPAIR.pem
     sudo chmod 400 /etc/salt/KEYPAIR.pem
+```
 
   Finally, run this command to finish deployment:
 
+```
     sudo bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "MyKeypairName" "MyAPIKey"
-  
+```
+
   There are other ways to get the private key to the cloud. In my personal environment I have the
   key information available on a server at home that is only available to the Salt Master
   in a private VPC subnet on AWS that is not routable from the internet. There's an IPSec VPN
