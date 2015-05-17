@@ -67,7 +67,7 @@
         if (hasFlash) {
           $(function () {
             jwplayer("jwp").setup({
-              file: "rtmp://"+MyRTMPDomain+"/live/feed",
+              file: "rtmp://"+MyRTMPDomain+":80/live/feed",
               height: 360,
               width: 640
             });
