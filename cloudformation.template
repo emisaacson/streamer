@@ -42,7 +42,7 @@
                 "Path"                     : "/",
                 "Policies"                 : [
                     {
-                        "PolicyName" : "policy-SaltAdminPolicy",
+                        "PolicyName" : "policySaltAdminPolicy",
                         "PolicyDocument" : {
                             "Statement" : [
                                 {

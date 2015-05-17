@@ -22,6 +22,9 @@ to consume the stream.
 
 * Optional Google Analytics integration.
 
+* Only the initial security and Salt Master resource are created with Cloudformation, which should
+make porting this to some provider other than AWS that salt-cloud supports not too difficult.
+
 Not Features
 ------------
 

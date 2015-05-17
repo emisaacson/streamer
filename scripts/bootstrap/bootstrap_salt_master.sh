@@ -55,7 +55,7 @@ ln -s /opt/stack/scripts/install/nginx-media-server.sh /srv/salt/nginx-media-ser
 cp -f /opt/stack/templates/salt/master /etc/salt/master
 service salt-master restart
 
-if [ x"$1" != "x" ]:
+if [ x"$1" != "x" ]; then
 	echo "$1" > /etc/salt/KEYPAIR.pem
 	chmod 400 /etc/salt/KEYPAIR.pem
 	bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "$2" "$3"
