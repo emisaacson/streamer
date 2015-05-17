@@ -1,6 +1,11 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
     "Parameters"               : {
+        "AmiId" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "Select a Debian, amd64, paravirtual, EBS backed instance."
+        },
         "KeyPairName" : {
             "Type" : "String",
             "Default" : "",
@@ -9,17 +14,17 @@
         "KeyContent" : {
             "Type" : "String",
             "Default" : "",
-            "Description" : "The full content of your EC2 private key. This is not very secure so make sure to use a key that is specific to this stack."
+            "Description" : "The full content of your EC2 private key. This is not very secure so make sure to use a key that is specific to this stack. (Optional)"
+        },
+        "ApiKey" : {
+            "Type" : "String",
+            "Default" : "",
+            "Description" : "The Key of your api key. Should not be used for any other purpose than this stack. (Optional)"
         },
         "ApiId" : {
             "Type" : "String",
             "Default" : "",
-            "Description" : "The ID of your api key. Again, should not be used for any other purpose than this stack."
-        },
-        "AmiId" : {
-            "Type" : "String",
-            "Default" : "",
-            "Description" : "Select a Debian, amd64, paravirtual, EBS backed instance."
+            "Description" : "The ID of your api key. Should not be used for any other purpose than this stack. (Optional)"
         }
     },
     "Resources"                : {
@@ -134,6 +139,10 @@
                                         "\" \"",
                                         {
                                             "Ref" : "ApiId"
+                                        },
+                                        "\" \"",
+                                        {
+                                            "Ref" : "ApiKey"
                                         },
                                         "\""
                                     ]

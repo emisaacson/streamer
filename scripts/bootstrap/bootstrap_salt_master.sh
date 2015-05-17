@@ -58,5 +58,5 @@ service salt-master restart
 if [ x"$1" != "x" ]; then
 	echo "$1" > /etc/salt/KEYPAIR.pem
 	chmod 400 /etc/salt/KEYPAIR.pem
-	bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "$2" "$3"
+	bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "$2" "$3" "$4"
 fi

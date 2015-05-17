@@ -16,8 +16,9 @@ popd
 SALT_MASTER_IP=`ifconfig | awk '/inet addr/{print substr($2,6)}' | head -n 1`
 KEYPAIR_NAME="$1"
 EC2_ID="$2"
+EC2_KEY="$3"
 
-QUERY_STRING2="salt_master=$SALT_MASTER_IP&keypair_name=$KEYPAIR_NAME&EC2_ID=$EC2_ID"
+QUERY_STRING2="salt_master=$SALT_MASTER_IP&keypair_name=$KEYPAIR_NAME&EC2_ID=$EC2_ID&EC2_KEY=$EC2_KEY"
 pushd /opt/stack/templates/salt-cloud/cloud.providers.d/
 echo "$QUERY_STRING2" | /usr/local/bin/jinja2 --format=querystring ec2-public.conf.tmpl > /etc/salt/cloud.providers.d/ec2-public.conf
 popd

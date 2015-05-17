@@ -18,7 +18,7 @@ ec2-public:
   # Set the EC2 access credentials (see below)
   #
   id: {{ EC2_ID }}
-  key: ''
+  key: '{{ EC2_KEY }}'
   # Make sure this key is owned by root with permissions 0400.
   #
   private_key: /etc/salt/KEYPAIR.pem
