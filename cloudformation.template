@@ -113,19 +113,22 @@
                                 "#!/bin/bash",
                                 "apt-get update",
                                 "apt-get install -y git",
-                                "git clone https://www.github.com/eisaacson/streamer.git /opt/stack",
+                                "git clone https://www.github.com/emisaacson/streamer.git /opt/stack",
                                 { "Fn::Join" : [ 
-                                    " ", 
-                                    [ "bash /opt/stack/scripts/bootstrap/bootstrap_salt_master.sh",
+                                    "", 
+                                    [ "bash /opt/stack/scripts/bootstrap/bootstrap_salt_master.sh \"",
                                         {
                                             "Ref" : "KeyContent"
                                         },
+                                        "\" \"",
                                         {
                                             "Ref" : "KeyPairName"
                                         },
+                                        "\" \"",
                                         {
                                             "Ref" : "ApiId"
-                                        }
+                                        },
+                                        "\""
                                     ]
                                 ]
                             ]
