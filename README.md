@@ -99,7 +99,8 @@ information without manual steps.
 
 7. You need a way to upload your video to the media server. If using Android, try
 arutcam. There are similar options for iOS but I can't recommend one. Configure arutcam
-or your app of choice to hit rtmp://my-domain-or-ip.com:80/live/feed. Start broadcasting!
+or your app of choice to hit rtmp://my-domain-or-ip.com:80/live/feed, where my-domain-or-ip.com
+points to the media01 server. Start broadcasting!
 
 8. All the client side code is in the `client` directory. You should open up index.html and read
 through that file to set your values accordingly. You will need to enter your various domains
