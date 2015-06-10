@@ -31,6 +31,11 @@ Not Features
 * You need to fork this repo and manually change configuration files if you want a different stack
 than you get out of the box (but it's not hard).
 
+* Firewall rules in the cloudformation template are very liberal (e.g. Salt minion ports are
+0.0.0.0/0 because it doesn't know anything about your setup). These could be parameterized
+but would it raise the barrier to of entry. Since Salt does it own authentication it doesn't
+seem so terrible, considering the use case.
+
 * Not efficient. The main transcoding server is HUGE and runs a couple hundred threads of FFMPEG
 simultaneously. If you're broadcasting an event for a couple hours it won't cost more than a few 
 dollars but in the name of all that is holy do not forget to turn these servers off when you are
