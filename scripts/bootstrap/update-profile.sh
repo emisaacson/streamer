@@ -5,7 +5,7 @@ HTTP_GROUP=`ec2-describe-group --filter="tag:Name=sgAllowHTTPAnywhere" | egrep ^
 SSH_GROUP=`ec2-describe-group --filter="tag:Name=sgAllowSSH" | egrep ^GROUP | awk '{ print $2 }'`
 RTMP_GROUP=`ec2-describe-group --filter="tag:Name=sgAllowRTMPAnywhere" | egrep ^GROUP | awk '{ print $2 }'`
 HTTP_ALT_GROUP=`ec2-describe-group --filter="tag:Name=sgAllowHTTPAltAnywhere" | egrep ^GROUP | awk '{ print $2 }'`
-DEFAULT_SUBNET=`aws ec2 describe-subnets --region=us-east-1 --filters Name=defaultForAz,Values=true Name=availabilityZone,Values=us-east-1a |  python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Subnets"][0]["SubnetId"]'`
+DEFAULT_SUBNET=`/usr/local/bin/aws ec2 describe-subnets --region=us-east-1 --filters Name=defaultForAz,Values=true Name=availabilityZone,Values=us-east-1a | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Subnets"][0]["SubnetId"]'`
 
 QUERY_STRING="http_alt_group=$HTTP_ALT_GROUP&http_group=$HTTP_GROUP&ssh_group=$SSH_GROUP&rtmp_group=$RTMP_GROUP&default_subnet=$DEFAULT_SUBNET"
 

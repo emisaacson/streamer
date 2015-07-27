@@ -31,6 +31,11 @@ Not Features
 * You need to fork this repo and manually change configuration files if you want a different stack
 than you get out of the box (but it's not hard).
 
+* Firewall rules in the cloudformation template are very liberal (e.g. Salt minion ports are
+0.0.0.0/0 because it doesn't know anything about your setup). These could be parameterized
+but would it raise the barrier to of entry. Since Salt does it own authentication it doesn't
+seem so terrible, considering the use case.
+
 * Not efficient. The main transcoding server is HUGE and runs a couple hundred threads of FFMPEG
 simultaneously. If you're broadcasting an event for a couple hours it won't cost more than a few 
 dollars but in the name of all that is holy do not forget to turn these servers off when you are
@@ -78,23 +83,15 @@ the information yourself (see next step).
 5. Skip this step if you inputted the parameters in step 4. If you did not, the deployment process
 will stop after the Salt Master machine is created. SSH into the Salt Master
 and place your key file in the location `/etc/salt/KEYPAIR.pem`. Then make it read-only via
-
-```
-    sudo chown root:root /etc/salt/KEYPAIR.pem
-    sudo chmod 400 /etc/salt/KEYPAIR.pem
-```
-
-  Finally, run this command to finish deployment:
-
-```
-    sudo bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "MyKeypairName" "MyApiId" "MyApiKey"
-```
-
-  There are other ways to get the private key to the cloud. In my personal environment I have the
-  key information available on a server at home that is only available to the Salt Master
-  in a private VPC subnet on AWS that is not routable from the internet. There's an IPSec VPN
-  connection between them and for my purposes that's a secure enough way to transfer the key
-  information without manual steps.
+`sudo chown root:root /etc/salt/KEYPAIR.pem;`
+`sudo chmod 400 /etc/salt/KEYPAIR.pem;`
+Finally, run this command to finish deployment:
+`sudo bash /opt/stack/scripts/bootstrap/bootstrap_salt_stack.sh "MyKeypairName" "MyApiId" "MyApiKey";`
+There are other ways to get the private key to the cloud. In my personal environment I have the
+key information available on a server at home that is only available to the Salt Master
+in a private VPC subnet on AWS that is not routable from the internet. There's an IPSec VPN
+connection between them and for my purposes that's a secure enough way to transfer the key
+information without manual steps.
 
 6. To take advantage of DNS load balancing, set the following DNS entries:
 
@@ -107,7 +104,8 @@ and place your key file in the location `/etc/salt/KEYPAIR.pem`. Then make it re
 
 7. You need a way to upload your video to the media server. If using Android, try
 arutcam. There are similar options for iOS but I can't recommend one. Configure arutcam
-or your app of choice to hit rtmp://my-domain-or-ip.com:80/live/feed. Start broadcasting!
+or your app of choice to hit rtmp://my-domain-or-ip.com:80/live/feed, where my-domain-or-ip.com
+points to the media01 server. Start broadcasting!
 
 8. All the client side code is in the `client` directory. You should open up index.html and read
 through that file to set your values accordingly. You will need to enter your various domains
